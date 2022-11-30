@@ -1,0 +1,34 @@
+import os
+from pathlib import Path
+
+# get whole file names specimen number
+def search_stl(path,list_stl):
+    """
+    output list of dir of stl under the folder.
+    """
+    p = Path(path)
+    i = 0
+    for file in p.iterdir():
+        if file.is_dir():
+            search_stl(file,list_stl)
+        elif file.is_file():
+            base, ext = os.path.splitext(file) #make taple
+            if ext == ".stl":
+                # resolve()を使って絶対パスを表示する
+                list_stl.append(file.resolve())
+    return list_stl
+
+# get list of files
+path = str(r"I:\20220923_Gunma_Kimura_WhaleDataBase\periotic_tympanic_bulla_for_upload\pairs")
+files = list()
+search_stl(path,files)
+
+#for file in files:
+    #repfile = str(file).replace(' ', '_') 
+    #os.rename(file,repfile)
+
+for i in range(len(files)):
+    files.append(str(files[i]).split('\\')[-1])
+
+for filename in files:
+    print(filename)
