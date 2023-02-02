@@ -2,9 +2,7 @@
 
 """Sample script for uploading to Sketchfab using the V3 API and the requests library."""
 
-import os
 import json
-from pathlib import Path
 from time import sleep
 from unicodedata import category
 
@@ -34,13 +32,11 @@ from requests.exceptions import RequestException
 ##
 
 SKETCHFAB_API_URL = 'https://api.sketchfab.com/v3'
-# API_TOKEN = 'b22a1408a460494aa718098700afc054' # rojohaku API token
-API_TOKEN = '05263c13aabb4cf79ed9372611a6ccd2' # GMNH API token
+API_TOKEN = 'b22a1408a460494aa718098700afc054' # rojohaku API token
 MAX_RETRIES = 50
 MAX_ERRORS = 10
 RETRY_TIMEOUT = 5  # seconds
 
-dirpath = str(r"I:\20220923_Gunma_Kimura_WhaleDataBase\periotic_tympanic_bulla_for_upload\test")
 
 def _get_request_payload(*, data=None, files=None, json_payload=False):
     """Helper method that returns the authentication token and proper content type depending on
@@ -205,34 +201,16 @@ def patch_model_options(model_url):
             print(f'PATCH options failed with error: {response.content}')
 
 
-# get whole file names with .blend
-def search_models(path,list_models):
-    """
-    output list of dir of stl under the folder.
-    """
-    p = Path(path)
-    i = 0
-    for file in p.iterdir():
-        if file.is_dir():
-            search_models(file,list_models)
-        elif file.is_file():
-            base, ext = os.path.splitext(file) #make taple
-            if ext == ".blend":
-                # resolve()を使って絶対パスを表示する
-                list_models.append(file.resolve())
-    return list_models
-
 ###################################
 # Uploads, polls and patch a model
 ###################################
 
 if __name__ == '__main__':
-    list_models = search_models(dirpath,[])
-    for model in list_models:
-        path = model
-        filename = str(model).split("\\")
-        basename = filename[-1].split(".")[0] # like a "Ziphius_cavirostris_USNM530291_tyb"
-        if model_url := upload(path, name = basename):
-            if poll_processing_status(model_url):
-                patch_model(model_url)
-                patch_model_options(model_url)
+    path = str(r'I:\20220923_Gunma_Kimura_WhaleDataBase\GMNH_stl_files\Berardius_bairdii_pe_GMNH-VM-474.stl')
+
+    
+
+    if model_url := upload(path, name = '名前変更テスト'):
+        if poll_processing_status(model_url):
+            patch_model(model_url)
+            patch_model_options(model_url)
