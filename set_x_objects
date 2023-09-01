@@ -1,0 +1,24 @@
+import bpy
+
+# 選択されたオブジェクトのリスト
+selected_objects = bpy.context.selected_objects
+
+# モデル間の間隔を計算するための変数
+total_length = 0.0
+
+# 選択されたオブジェクトの長さを取得し、モデル間の間隔の計算に利用
+for obj in selected_objects:
+    length = obj.dimensions.x
+    total_length += length
+
+# モデル間の間隔を計算
+average_length = total_length / len(selected_objects)
+
+# 選択されたオブジェクトをx軸方向に並べる
+start_position = selected_objects[0].location.copy()
+for obj in selected_objects:
+    obj.location = start_position
+    start_position.x += obj.dimensions.x + average_length
+
+# 3Dビューワーを更新
+bpy.context.view_layer.update()
